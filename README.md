@@ -16,6 +16,9 @@ Scope:
 - `bin/sb_mok_mvp.sh` - Secure Boot MOK status/generate/enroll/export
 - `lib/common.sh` - shared logging, deps, detection, backups, state, lock
 - `etc/example.env` - sample env vars
+- `test/` - host and VM test automation scripts
+- `CHANGELOG.md` - release history
+- `agent.md` - guardrails for coding agents and contributors
 
 ## Hard assumptions
 - Root-only scripts
@@ -86,6 +89,29 @@ Reset kill switch:
 ```bash
 sudo ./bin/wg_killswitch_reset.sh --apply
 ```
+
+## Automated tests (`test/`)
+Prepare a libvirt/vmm VM quickly:
+```bash
+./test/vmm_prepare_vm.sh --download-image --ssh-pubkey ~/.ssh/id_ed25519.pub --secure-boot --recreate
+```
+
+Run local repository checks on host:
+```bash
+./test/run_host_tests.sh
+```
+
+Run local checks plus remote VM runtime suite:
+```bash
+./test/run_host_tests.sh --vm-host 192.168.122.101 --vm-user tester --nm-conn proton-wg --allow-disconnect
+```
+
+Run runtime suite directly on VM:
+```bash
+sudo ./test/run_vm_tests.sh --nm-conn proton-wg --allow-disconnect
+```
+
+See detailed test docs in `test/README.md`.
 
 ## Kill switch model
 Priority:
